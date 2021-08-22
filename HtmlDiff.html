@@ -1,0 +1,212 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+  <TITLE>Diff, Match and Patch: Demo of Patch</TITLE>
+  <SCRIPT SRC="./diff_match_patch.js"></SCRIPT>
+  
+<style>
+  ins {
+    color: green;
+  }
+  del {
+    color: red;
+  }
+  </style>
+</HEAD>
+
+<BODY>
+<H1>Diff, Match and Patch</H1>
+<H2>Demo of Patch</H2>
+
+<P>Two texts can be diffed against each other, generating a list of patches.
+These patches can then be applied against a third text.  If the third text has edits of its own, this version of patch
+will apply its changes on a best-effort basis, reporting which patches succeeded and which failed.</P>
+
+<P>In this scenario Shakespeare wrote Hamlet in Early Modern English, the source document.  Then two derivative
+works were created.  One is Hamlet updated to Modern English.  The other is a Star Trek parody in Early Modern English.
+This demonstrantion creates a list of patches between the source and the Modern English version.  Then it
+applies those patches onto the Star Trek parody, thus creating a Star Trek parody in
+Modern English.</P>
+
+<FORM action="#" onsubmit="return false">
+  <H3>Shakespeare's copy:</H3>
+  <TABLE WIDTH="100%"><TR>
+    <TD WIDTH="50%" style="border: #60bd90 1px solid" id="oldHtml"><div>Hamlet: Do you see yonder cloud that's almost in shape of a camel?
+      <p>Polonius: By the mass, and 'tis like a camel, indeed.</p>
+      Hamlet: Methinks it is like a weasel.
+      Polonius: It is backed like a weasel.
+      Hamlet: Or like a whale?
+      Polonius: Very like a whale.
+      -- Shakespeare</div></TD>
+    <TD WIDTH="50%" style="border: #60bd90 1px solid" id="newHtml"><div>Hamlet: Do you see the cloud over there that's almost the shape of a camel?
+      <div>Polonius: By golly, it is like a camel, indeed.</div>
+      Hamlet: I think it looks like a weasel.
+      <p>
+      Polonius: It is shaped like a weasel.
+</p>          Hamlet: Or like a whale?
+      Polonius: It's totally like a whale.
+      -- Shakespeare
+    </div></TD>
+  </TR></TABLE>
+  <P><INPUT TYPE="button" onClick="diff_launch()" VALUE="Compute Patch"/></P>
+</FORM>
+
+<DIV ID="diffdatediv"></DIV>
+
+<table width="100%">
+  <tr>
+    <td width="50%" id="oldDiffHtml"></td>
+    <td width="50%" id="newDiffHtml"></td>
+  </tr>
+</table>
+
+</BODY>
+
+<SCRIPT>
+
+  function getTextFromHtml(html) {
+        let text = ''
+        let tag = false
+        for (let i=0,len=html.length;i<len;i++) {
+          if (!tag && html[i] === '<') {
+            tag = true
+          } else if (tag && html[i] === '>') {
+            tag = false
+            continue
+          }
+          if (!tag) {
+            text += html[i]
+          }
+        }
+        return text
+      }
+      function getOneTextFromHtml(html) {
+        let tag = ''
+        let text = ''
+        let flag = false
+        for (let i=0,len=html.length;i<len;i++) {
+          if (!flag && html[i] === '<') {
+            flag = true
+            if (text) {
+              return {tag, text}
+            }
+          } else if (flag && html[i] === '>') {
+            flag = false
+            tag += html[i]
+            continue
+          }
+          if (!flag) {
+            text += html[i]
+          } else {
+            tag += html[i]
+          }
+        }
+        return {tag, text}
+      }
+      function formatText(diffType, diffText) {
+        if (diffType === 0) {
+          return diffText
+        } else if (diffType === -1) {
+          return '<del>' + diffText + '</del>'
+        } else {
+          return '<ins>' + diffText + '</ins>'
+        }
+      }
+  
+  var dmp = new diff_match_patch();
+  
+  var patch_text = '';
+  
+  function diff_launch() {
+    var html1 = document.getElementById('oldHtml').innerHTML;
+        var html2 = document.getElementById('newHtml').innerHTML;
+  
+        var text1 = this.getTextFromHtml(html1);
+        var text2 = this.getTextFromHtml(html2);
+  
+        var ms_start = (new Date).getTime();
+        var diff = this.dmp.diff_main(text1, text2, true);
+        var ms_end = (new Date).getTime();
+  
+        if (diff.length > 2) {
+          this.dmp.diff_cleanupSemantic(diff);
+        }
+        console.log(diff)
+  
+        document.getElementById('diffdatediv').innerHTML =
+            'Time: ' + (ms_end - ms_start) / 1000 + 's';
+  
+        let oldDiff = [];
+        let newDiff = [];
+        for (let i = 0,len=diff.length; i < len; i++) {
+          if (diff[i][0] === 0) {
+            oldDiff.push({...diff[i]})
+            newDiff.push({...diff[i]})
+          } else if (diff[i][0] === -1) {
+            oldDiff.push({...diff[i]})
+          } else {
+            newDiff.push({...diff[i]})
+          }
+        }
+        let oldDiffHtml = ''
+        while (true) {
+          let {tag, text} = this.getOneTextFromHtml(html1)
+          oldDiffHtml += tag
+          html1 = html1.substr(tag.length + text.length)
+          for (let i = 0,len=oldDiff.length; i < len; i++) {
+            if (oldDiff[i][1] === text) {
+              oldDiffHtml += this.formatText(oldDiff[i][0], oldDiff[i][1])
+              oldDiff.splice(i,1)
+              break
+            }
+            if (oldDiff[i][1].length > text.length) {
+              oldDiffHtml += this.formatText(oldDiff[i][0], text)
+              oldDiff[i][1] = oldDiff[i][1].substr(text.length)
+              break
+            }
+            if (text.length > oldDiff[i][1].length) {
+              oldDiffHtml += this.formatText(oldDiff[i][0], oldDiff[i][1])
+              text = text.substr(oldDiff[i][1].length)
+              oldDiff.splice(i,1)
+              i--
+              len--
+            }
+          }
+          if (!html1 || !oldDiff || oldDiff.length <= 0) {
+            break
+          }
+        }
+        document.getElementById('oldDiffHtml').innerHTML = oldDiffHtml + html1
+        let newDiffHtml = ''
+        while (true) {
+          let {tag, text} = this.getOneTextFromHtml(html2)
+          newDiffHtml += tag
+          html2 = html2.substr(tag.length + text.length)
+          for (let i = 0,len=newDiff.length; i < len; i++) {
+            if (newDiff[i][1] === text) {
+              newDiffHtml += this.formatText(newDiff[i][0], newDiff[i][1])
+              newDiff.splice(i,1)
+              break
+            }
+            if (newDiff[i][1].length > text.length) {
+              newDiffHtml += this.formatText(newDiff[i][0], text)
+              newDiff[i][1] = newDiff[i][1].substr(text.length)
+              break
+            }
+            if (text.length > newDiff[i][1].length) {
+              newDiffHtml += this.formatText(newDiff[i][0], newDiff[i][1])
+              text = text.substr(newDiff[i][1].length)
+              newDiff.splice(i,1)
+              i--
+              len--
+            }
+          }
+          if (!html2 || !newDiff || newDiff.length <= 0) {
+            break
+          }
+        }
+        document.getElementById('newDiffHtml').innerHTML = newDiffHtml + html2
+  }
+  
+  </SCRIPT>
+  </HTML>
