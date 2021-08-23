@@ -114,6 +114,8 @@ Modern English.</P>
       }
   
   var dmp = new diff_match_patch();
+  // 超时时间，0 不对计算做任何限制
+  dmp.Diff_Timeout = 0;
   
   var patch_text = '';
   
