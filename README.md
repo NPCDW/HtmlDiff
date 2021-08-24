@@ -1,7 +1,10 @@
 # HtmlDiff
 Html文本比对，基于google的diff_match_patch
+
+[尝试一下：https://npcdw.github.io/HtmlDiff/HtmlDiff.html](https://npcdw.github.io/HtmlDiff/HtmlDiff.html)
+
 效果图如下：
-![image](https://user-images.githubusercontent.com/32638459/130355062-4d2afb16-0861-4284-846b-f0d024d4f632.png)
+![image](https://user-images.githubusercontent.com/32638459/130552390-431d9e6c-cab4-4ed9-a546-75f249d82076.png)
 对比原理：
 1. 获取到两个节点下的HTML文本
 2. 去掉所有的html标签，只对比内容
