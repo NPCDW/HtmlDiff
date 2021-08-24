@@ -32,23 +32,30 @@ Modern English.</P>
 <FORM action="#" onsubmit="return false">
   <H3>Shakespeare's copy:</H3>
   <TABLE WIDTH="100%"><TR>
-    <TD WIDTH="50%" style="border: #60bd90 1px solid" id="oldHtml"><div>Hamlet: Do you see yonder cloud that's almost in shape of a camel?
-      <p>Polonius: By the mass, and 'tis like a camel, indeed.</p>
-      Hamlet: Methinks it is like a weasel.
-      Polonius: It is backed like a weasel.
-      Hamlet: Or like a whale?
-      Polonius: Very like a whale.
-      -- Shakespeare</div></TD>
-    <TD WIDTH="50%" style="border: #60bd90 1px solid" id="newHtml"><div>Hamlet: Do you see the cloud over there that's almost the shape of a camel?
-      <div>Polonius: By golly, it is like a camel, indeed.</div>
-      Hamlet: I think it looks like a weasel.
-      <p>
-      Polonius: It is shaped like a weasel.
-</p>          Hamlet: Or like a whale?
-      Polonius: It's totally like a whale.
-      -- Shakespeare
-    </div></TD>
+    <TD WIDTH="50%">
+      <textarea style="width:100%;height: 200px;border: #60bd90 1px solid" id="oldHtml">
+        <div>Hamlet: Do you see yonder cloud that's almost in shape of a camel?
+        <p>Polonius: By the mass, and 'tis like a camel, indeed.</p>
+        Hamlet: Methinks it is like a weasel.
+        Polonius: It is backed like a weasel.
+        Hamlet: Or like a whale?
+        Polonius: Very like a whale.
+        -- Shakespeare</div>
+      </textarea>
+    </TD>
+    <TD WIDTH="50%">
+      <textarea style="width:100%;height: 200px;border: #60bd90 1px solid" id="newHtml">
+        <div>Hamlet: Do you see the cloud over there that's almost the shape of a camel?
+          <div>Polonius: By golly, it is like a camel, indeed.</div>
+          Hamlet: I think it looks like a weasel.
+          <p>Polonius: It is shaped like a weasel.</p>          Hamlet: Or like a whale?
+          Polonius: It's totally like a whale.
+          -- Shakespeare
+        </div>
+      </textarea>
+    </TD>
   </TR></TABLE>
+  <div id="tmp"></div>
   <P><INPUT TYPE="button" onClick="diff()" VALUE="Compute Patch"/></P>
 </FORM>
 
@@ -56,8 +63,8 @@ Modern English.</P>
 
 <table width="100%">
   <tr>
-    <td width="50%" id="oldDiffHtml"></td>
-    <td width="50%" id="newDiffHtml"></td>
+    <td width="50%" valign="top" id="oldDiffHtml"></td>
+    <td width="50%" valign="top" id="newDiffHtml"></td>
   </tr>
 </table>
 
@@ -65,8 +72,8 @@ Modern English.</P>
 
 <SCRIPT>
   function diff() {
-    var html1 = document.getElementById('oldHtml').innerHTML;
-    var html2 = document.getElementById('newHtml').innerHTML;
+    var html1 = document.getElementById('oldHtml').value;
+    var html2 = document.getElementById('newHtml').value;
 
     let {time, oldDiffHtml, newDiffHtml} = diff_launch(html1, html2)
 
