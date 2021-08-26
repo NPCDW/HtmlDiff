@@ -1,5 +1,5 @@
 # HtmlDiff
-Html文本比对，基于google的diff_match_patch
+Html文本比对，基于google的[diff_match_patch](https://github.com/google/diff-match-patch)
 
 [尝试一下：https://npcdw.github.io/HtmlDiff/HtmlDiff.html](https://npcdw.github.io/HtmlDiff/HtmlDiff.html)
 
