@@ -1,7 +1,11 @@
 # HtmlDiff
-Html文本比对，基于google的[diff_match_patch](https://github.com/google/diff-match-patch)
+Html文本比对实现，基于google的[diff_match_patch](https://github.com/google/diff-match-patch)
 
 [尝试一下：https://npcdw.github.io/HtmlDiff/HtmlDiff.html](https://npcdw.github.io/HtmlDiff/HtmlDiff.html)
+
+HtmlDiff支持还原成两个原始的html，并添加标记，支持添加到忽略列表的标签不进行对比
+
+支持生成一个html（不推荐，因为格式可能会错乱，例如两个结构不同的表格对比）
 
 效果图如下：
 ![image](https://user-images.githubusercontent.com/32638459/130552390-431d9e6c-cab4-4ed9-a546-75f249d82076.png)
@@ -9,7 +13,7 @@ Html文本比对，基于google的[diff_match_patch](https://github.com/google/d
 1. 获取到两个节点下的HTML文本
 2. 去掉所有的html标签，只对比内容
 3. 使用google的算法对比完成后，返回的结果是这样的：`[{"0": 0,"1": "Hamlet: Do you see "},{"0": -1,"1": "yonder cloud"},{"0": 1,"1": "the cloud over there"}]`
-4. 还原成HTML文本
+4. 分别还原成最初的HTML文本并添加标记
 
 还原成HTML文本的过程大致是
 
