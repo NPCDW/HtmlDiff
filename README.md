@@ -1,7 +1,7 @@
 # HtmlDiff
 Html文本比对实现，基于google的[diff_match_patch](https://github.com/google/diff-match-patch)
 
-[尝试一下：https://npcdw.github.io/HtmlDiff/HtmlDiff.html](https://npcdw.github.io/HtmlDiff/HtmlDiff.html)
+[尝试一下：https://npcdw.github.io/HtmlDiff/](https://npcdw.github.io/HtmlDiff/)
 
 HtmlDiff支持还原成两个原始的html，并添加标记，支持添加到忽略列表的标签不进行对比
 
